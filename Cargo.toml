@@ -1,0 +1,65 @@
+[package]
+name = "recipe_final_exercise"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+leptos = "0.5.4"
+leptos_router = "0.5.4"
+leptos_meta = "0.5.4"
+wasm-bindgen = "=0.2.89"
+web-sys = { version = "0.3.66", features = ["HtmlDocument"] }
+console_error_panic_hook = "0.1.7"
+# Not actually used but #[compoenent] doesn't compile without it
+tracing = "0.1.40"
+serde = { version = "1.0.193", features = ["derive"] }
+bcrypt = "0.15.0"
+rand = "0.8.5"
+base64 = "0.21.5"
+bson = "2.8.0"
+thiserror = "1.0.50"
+cfg-if = "1.0.0"
+futures = "0.3.29"
+
+actix-web = { version = "4.4.0", optional = true }
+actix-files = { version = "0.6.2", optional = true }
+leptos_actix = { version = "0.5.4", optional = true }
+mongodb = { version = "2.8.0", optional = true }
+
+[features]
+client = [
+  "leptos/hydrate",
+  "leptos_router/hydrate",
+  "leptos_meta/hydrate",
+]
+server = [
+  "leptos/ssr",
+  "leptos_router/ssr",
+  "leptos_meta/ssr",
+  "dep:actix-web",
+  "dep:actix-files",
+  "dep:leptos_actix",
+  "dep:mongodb",
+]
+
+[profile.wasm-release]
+inherits = "release"
+opt-level = 'z'
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[package.metadata.leptos]
+output-name = "app"
+site-root = "target/site"
+style-file = "style/main.scss"
+# assets-dir = "assets"
+site-addr = "127.0.0.1:3000"
+reload_port = "3001"
+env = "DEV"
+bin-features = ["server"]
+lib-features = ["client"]
+lib-profile-release = "wasm-release"
